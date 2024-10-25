@@ -19,8 +19,9 @@ app.use(bodyParser.json());
 app.use("/api", indexRouter);
 // api/user
 const mongoURI = process.env.LOCAL_DB_ADDRESS;
+const MONGODB_URI_PROD = process.env.MONGODB_URI_PROD;
 mongoose
-  .connect(mongoURI)
+  .connect(MONGODB_URI_PROD || mongoURI)
   .then(() => console.log("mongoose connected"))
   .catch((err) => console.log("DB connection fail, err"));
 
