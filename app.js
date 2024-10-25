@@ -8,7 +8,7 @@ const app = express();
 require("dotenv").config();
 app.use(
   cors({
-    origin: ["https://dony-shop.netlify.app"], // Netlify 배포 주소
+    origin: ["http://localhost:3000", "https://dony-shop.netlify.app"], // Netlify 배포 주소
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
