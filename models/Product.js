@@ -6,18 +6,18 @@ const productSchema = Schema(
     name: { type: String, required: true },
     image: { type: String, required: true },
     category: { type: Array, required: true },
-    discription: { type: String, required: true },
+    description: { type: String, required: true },
     price: { type: Number, required: true },
-    stock: { type: Object, required: true },
+    stock: { type: Map, of: Number, required: true },
     status: { type: String, default: "active" },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-userSchema.method.toJSON = function () {
+productSchema.methods.toJSON = function () {
   const obj = this._doc;
-  delete obj.updateAt;
+  delete obj.updatedAt;
   return obj;
 };
 

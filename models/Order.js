@@ -22,9 +22,9 @@ const orderSchema = Schema(
   { timestamps: true }
 );
 
-userSchema.method.toJSON = function () {
+orderSchema.methods.toJSON = function () {
   const obj = this._doc;
-  delete obj.updateAt;
+  delete obj.updatedAt;
   return obj;
 };
 
