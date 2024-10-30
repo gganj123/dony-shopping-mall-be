@@ -42,7 +42,7 @@ productController.getProducts = async (req, res) => {
     let response = { status: "success" };
     if (page) {
       query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
-      const totalItemNum = await Product.find(cond).count();
+      const totalItemNum = await Product.find(cond).countDocuments();
       const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
       response.totalPageNum = totalPageNum;
     }
