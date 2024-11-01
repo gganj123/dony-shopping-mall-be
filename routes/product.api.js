@@ -12,4 +12,11 @@ router.post(
 
 router.get("/", productController.getProducts);
 
+router.put(
+  "/:id",
+  productController.authController.authenticate,
+  authController.checkAdminPermission,
+  productController.updateProduct
+);
+
 module.exports = router;
