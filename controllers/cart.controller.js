@@ -26,11 +26,25 @@ cartController.addItemToCart = async (req, res) => {
     //잇다면?
     //카트에 아이템을 추가
     cart.items = [...cart.items, { productId, size, qty }];
+    console.log(cart.items.length);
     await cart.save();
 
     res
       .status(200)
       .json({ status: "success", data: cart, cartItemsQty: cart.items.length });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+cartController.getCartList = async (req, res) => {
+  try {
+    const { userId } = req;
+
+    let cart = await Cart.findOne({ userId }).populate("items.productId");
+    if (!cart) throw new Error("텅~");
+
+    res.status(200).json({ status: "success", data: cart });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
