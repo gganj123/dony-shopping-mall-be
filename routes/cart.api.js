@@ -8,7 +8,7 @@ router.get("/", authController.authenticate, cartController.getCartList);
 router.delete(
   "/:id",
   authController.authenticate,
-  cartController.deleteCartList
+  cartController.deleteCartItem
 );
 
 module.exports = router;
