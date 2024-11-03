@@ -58,9 +58,32 @@ cartController.deleteCartItem = async (req, res) => {
     cart.items = cart.items.filter((item) => !item._id.equals(id));
 
     await cart.save();
-    res.status(200).json({ status: 200, cartItemCount: cart.items.length });
+    res
+      .status(200)
+      .json({ status: "delete success", cartItemCount: cart.items.length });
   } catch (error) {
-    return res.status(400).json({ status: "fail", error: error.message });
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+cartController.updateCartItemQty = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { qty } = req.body;
+    const { userId } = req;
+
+    const cart = await Cart.findOne({ userId });
+    if (!cart) throw new Error("카트를 찾을 수 없습니다.");
+
+    const item = cart.items.find((item) => item._id.equals(id));
+    if (!item) throw new Error("아이템을 찾을 수 없습니다.");
+
+    item.qty = qty;
+    await cart.save();
+
+    res.status(200).json({ status: "update success", qty: qty });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
   }
 };
 
