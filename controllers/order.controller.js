@@ -1,6 +1,5 @@
 const Order = require("../models/Order");
 const { randomStringGenerator } = require("../utils/randomStringGenerator");
-const { getCartQty } = require("./cart.controller");
 const productController = require("./product.controller");
 
 const orderController = {};
