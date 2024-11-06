@@ -125,9 +125,18 @@ productController.checkStock = async (item) => {
   //내가 사려는 아이템 재고 정보들고오기
 
   const product = await Product.findById(item.productId);
+  if (!(product.stock instanceof Map)) {
+    product.stock = new Map(
+      Object.entries(product.stock || {}).map(([key, value]) => [
+        key,
+        Number(value) || 0,
+      ])
+    );
+  }
   //내가 사려는 아이템 qty, 재고비교
+  const stockCount = product.stock.get(item.size);
 
-  if (product.stock[item.size] < item.qty) {
+  if (isNaN(stockCount) || stockCount < item.qty) {
     //재고가 불충분하면 불충분 메세지와 함께 데이터 반환
     return {
       isVerify: false,
@@ -135,9 +144,7 @@ productController.checkStock = async (item) => {
     };
   }
   //충분하다면, 재고에서 - qty 성공
-  const newStock = { ...product.stock };
-  newStock[item.size] -= item.qty;
-  product.stock = newStock;
+  product.stock.set(item.size, stockCount - item.qty);
 
   await product.save();
 

@@ -32,6 +32,8 @@ orderController.createOrder = async (req, res) => {
       orderNum: randomStringGenerator(),
     });
     await newOrder.save();
+    //save후에 카트를 비워두자
+
     res.status(200).json({ status: "success", orderNum: newOrder.orderNum });
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });
