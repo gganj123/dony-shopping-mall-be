@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require("./User");
 const Product = require("./Product");
 const Cart = require("./Cart");
+const { getCartQty } = require("../controllers/cart.controller");
 const Schema = mongoose.Schema;
 const orderSchema = Schema(
   {

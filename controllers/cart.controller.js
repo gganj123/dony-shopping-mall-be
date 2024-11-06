@@ -92,7 +92,7 @@ cartController.getCartQty = async (req, res) => {
     const { userId } = req;
     if (!userId) throw new Error("User not authenticated");
 
-    const cart = Cart.findById({ userId });
+    const cart = await Cart.findOne({ userId });
     if (!cart) throw new Error("There is no cart!");
     res.status(200).json({ status: "success", qty: cart.items.length });
   } catch (error) {
