@@ -3,6 +3,9 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const { OAuth2Client } = require("google-auth-library");
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
 const authController = {};
 
 authController.loginWithEmail = async (req, res) => {
@@ -20,6 +23,20 @@ authController.loginWithEmail = async (req, res) => {
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
+};
+
+authController.loginWithGoogle = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+    const ticket = await googleClient.verifyIdToken({
+      idToken: token,
+      audience: GOOGLE_CLIENT_ID,
+    });
+    const { email, name } = ticket.getPayload();
+    console.log("ee", email, name);
+    //TODO
+  } catch (error) {}
 };
 
 authController.authenticate = async (req, res, next) => {
