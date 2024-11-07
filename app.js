@@ -6,13 +6,13 @@ const indexRouter = require("./routes/index");
 const app = express();
 
 require("dotenv").config();
+
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "http://localhost",
       "https://dony-shop.netlify.app",
-      "https://dony-shop-c2563d3d31e6.herokuapp.com",
     ], // Netlify 배포 주소
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
