@@ -11,5 +11,10 @@ router.get(
   authController.checkAdminPermission,
   orderController.getOrderList
 );
-
+router.put(
+  "/admin/status",
+  authController.authenticate,
+  authController.checkAdminPermission,
+  orderController.updateOrderStatus
+);
 module.exports = router;

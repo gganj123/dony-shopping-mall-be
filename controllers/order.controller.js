@@ -57,10 +57,10 @@ orderController.getOrderList = async (req, res) => {
     const PAGE_SIZE = 3;
 
     const cond = {
-      ...(orderNum && { orderNum: { $regex: orderNum, $options: "i" } }),
+      ...(orderNum && { orderNum: { $regex: orderNum, $options: "i" } }), // orderNum 조건 추가
       isDeleted: { $ne: true },
     };
-
+    console.log("Search Condition:", cond);
     let query = Order.find(cond)
       .populate("userId", "email")
       .populate("items.productId", "name");
@@ -74,8 +74,20 @@ orderController.getOrderList = async (req, res) => {
     }
     const orderList = await query.exec();
     response.data = orderList;
+    console.log("Search Condition:", cond);
 
     res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+orderController.updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+    const order = await Order.findByIdAndUpdate(orderId, { status });
+    if (!order) throw new Error("수정할 주문이 존재하지 않습니다.");
+    res.status(200).json({ status: "success", data: order });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
