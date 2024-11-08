@@ -1,7 +1,6 @@
 const Order = require("../models/Order");
 const { randomStringGenerator } = require("../utils/randomStringGenerator");
 const productController = require("./product.controller");
-
 const orderController = {};
 
 orderController.createOrder = async (req, res) => {
@@ -54,16 +53,29 @@ orderController.getOrder = async (req, res) => {
 
 orderController.getOrderList = async (req, res) => {
   try {
+    const { orderNum, page } = req.query;
+    const PAGE_SIZE = 3;
+
     const cond = {
-      ...(name && { name: { $regex: name, $options: "i" } }), // name검색 조건이 있을때 조건 따르기
-      isDeleted: { $ne: true }, //isdelete 는 true가 아닌것은 항상 제외
+      ...(orderNum && { orderNum: { $regex: orderNum, $options: "i" } }),
+      isDeleted: { $ne: true },
     };
 
-    const order = await Order.find(cond)
+    let query = Order.find(cond)
       .populate("userId", "email")
-      .populate("productId", "name image");
+      .populate("items.productId", "name");
 
-    res.status(200).json({ status: "success", data: order });
+    let response = { status: "success" };
+    if (page) {
+      query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
+      const totalItemNum = await Order.find(cond).countDocuments();
+      const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+      response.totalPageNum = totalPageNum;
+    }
+    const orderList = await query.exec();
+    response.data = orderList;
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
