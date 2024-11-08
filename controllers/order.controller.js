@@ -40,4 +40,16 @@ orderController.createOrder = async (req, res) => {
   }
 };
 
+orderController.getOrderList = async () => {
+  try {
+    const { userId } = req;
+    const order = await Order.findOne({ userId }).populate("items.productId");
+    if (!order) throw new Error("주문한 물품이 없습니다.");
+
+    res.status(200).json({ status: "success", data: order });
+  } catch (error) {
+    return res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
 module.exports = orderController;
