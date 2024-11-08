@@ -36,19 +36,36 @@ orderController.createOrder = async (req, res) => {
 
     res.status(200).json({ status: "success", orderNum: newOrder.orderNum });
   } catch (error) {
-    return res.status(400).json({ status: "fail", error: error.message });
+    res.status(400).json({ status: "fail", error: error.message });
   }
 };
 
-orderController.getOrderList = async () => {
+orderController.getOrder = async (req, res) => {
   try {
     const { userId } = req;
-    const order = await Order.findOne({ userId }).populate("items.productId");
+    const order = await Order.find({ userId }).populate("items.productId");
     if (!order) throw new Error("주문한 물품이 없습니다.");
 
     res.status(200).json({ status: "success", data: order });
   } catch (error) {
-    return res.status(400).json({ status: "fail", error: error.message });
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+orderController.getOrderList = async (req, res) => {
+  try {
+    const cond = {
+      ...(name && { name: { $regex: name, $options: "i" } }), // name검색 조건이 있을때 조건 따르기
+      isDeleted: { $ne: true }, //isdelete 는 true가 아닌것은 항상 제외
+    };
+
+    const order = await Order.find(cond)
+      .populate("userId", "email")
+      .populate("productId", "name image");
+
+    res.status(200).json({ status: "success", data: order });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
   }
 };
 
