@@ -36,13 +36,15 @@ productController.createProduct = async (req, res) => {
 
 productController.getProducts = async (req, res) => {
   try {
-    const { page, name } = req.query;
+    const { page, name, category } = req.query; // category 추가
     const cond = {
-      ...(name && { name: { $regex: name, $options: "i" } }), // name검색 조건이 있을때 조건 따르기
-      isDeleted: { $ne: true }, //isdelete 는 true가 아닌것은 항상 제외
+      ...(name && { name: { $regex: name, $options: "i" } }), // 이름 검색 조건
+      ...(category && category !== "new" && { category: category }),
+      isDeleted: { $ne: true }, // 삭제되지 않은 제품만 표시
     };
     let query = Product.find(cond);
     let response = { status: "success" };
+
     if (page) {
       query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
       const totalItemNum = await Product.find(cond).countDocuments();
